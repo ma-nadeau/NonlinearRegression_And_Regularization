@@ -41,4 +41,3 @@ def sinusoidal_function_for_synthetic_data(x):
 
 def linear_function_for_synthetic_data(x):
     return -4.0 * x + 10
-
