@@ -14,6 +14,10 @@ from Assignment2.PlotHelper import *
 
 
 def model_fitting():
+    """
+    Plots the model fitting for Part 1
+    :return:
+    """
 
     data_range = (0.0, 20.0)
     n_samples = 100
@@ -64,10 +68,11 @@ def model_fitting():
             output_folder="../Results",
         )
 
-    # Here we are simply plotting Gaussian bases
-
 
 def gaussian_basis():
+    """
+    Plots the gaussian basis for Part 1
+    """
     precision = 1000  # number of data point per plots
     x = np.linspace(0, 20, precision)
     amount = 100  # number of
@@ -77,6 +82,7 @@ def gaussian_basis():
 
 
 def sum_of_squared_errors():
+    """plots the sum of squared errors for Part 1"""
 
     data_range = (0.0, 20.0)
     n_samples = 100
@@ -142,6 +148,7 @@ def sum_of_squared_errors():
         output_folder="../Results",
         filename="SSE (Test)",
         title="Test - Sum of Squared Errors vs. Number of Bases",
+        log_scale=True,
     )
     plot_sse(
         range_of_value,
@@ -153,6 +160,9 @@ def sum_of_squared_errors():
 
 
 def bias_variance_tradeoff_analysis():
+    """
+    Plots the bias variance tradeoff analysis of Part 2
+    """
     data_range = (0.0, 20.0)
     n_samples = 100
     noise_mean = 0.0
@@ -162,10 +172,16 @@ def bias_variance_tradeoff_analysis():
     precision = 1000
     x = np.linspace(0, 20, precision)
 
+    sse_test_list = []
+    sse_train_list = []
+
     # Plot non-linear regression for number of bases 0, 10 20 ,..., 100
-    for num_bases in range(0, 101, 10):
+    range_of_value = range(0, 101, 10)
+    for num_bases in range_of_value:
 
         all_fitted_models = []
+        all_training_sse = []
+        all_testing_sse = []
 
         # repeat the process 10 times per number bases
         for i in range(10):
@@ -181,6 +197,7 @@ def bias_variance_tradeoff_analysis():
 
             lr = NonLinearRegression(False)
 
+            ### For Model Fitting ###
             # Compute basis matrix for the original data
             mu = np.linspace(0, 20, num_bases)
 
@@ -194,6 +211,29 @@ def bias_variance_tradeoff_analysis():
             y_h = lr.predict(phi_plot)
             all_fitted_models.append(y_h)
 
+            ### For Train and Test Errors ###
+
+            x_train, x_test, y_train, y_test, y_train_true, y_test_true = (
+                train_test_split(x_values, y_values_noise, y_values)
+            )
+
+            phi_train = gaussian(x_train[:, None], mu[None, :], 1)
+            phi_test = gaussian(x_test[:, None], mu[None, :], 1)
+
+            # Fit the model on the training data
+            lr.fit(phi_train, y_train)
+
+            # Predict using the training and testing data
+            y_train_pred = lr.predict(phi_train)
+            y_test_pred = lr.predict(phi_test)
+
+            # Calculate sum of squared errors for training and testing data
+            sse_train = calculate_sse(y_train_true, y_train_pred)
+            sse_test = calculate_sse(y_test_true, y_test_pred)
+
+            all_training_sse.append(sse_train)
+            all_testing_sse.append(sse_test)
+
         plot_average_fitted_models(
             x,
             all_fitted_models,
@@ -202,9 +242,28 @@ def bias_variance_tradeoff_analysis():
             output_folder="../Results",
         )
 
+        sse_test_list.append(np.mean(all_testing_sse, axis=0))
+        sse_train_list.append(np.mean(all_training_sse, axis=0))
+
+    plot_average_sse(
+        range_of_value,
+        sse_test_list,
+        output_folder="../Results",
+        filename="Average SSE (Test)",
+        title="Average Test - Sum of Squared Errors vs. Number of Bases",
+        log_scale=True,
+    )
+    plot_average_sse(
+        range_of_value,
+        sse_train_list,
+        output_folder="../Results",
+        filename="Average SSE (Train)",
+        title="Average Train - Sum of Squared Errors vs. Number of Bases",
+    )
+
 
 if __name__ == "__main__":
-    # gaussian_basis()
-    # model_fitting()
-    # sum_of_squared_errors()
+    gaussian_basis()
+    model_fitting()
+    sum_of_squared_errors()
     bias_variance_tradeoff_analysis()

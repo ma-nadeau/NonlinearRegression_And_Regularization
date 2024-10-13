@@ -89,17 +89,17 @@ def plot_model_fit(
     """
     Plots the model's fit, noisy data, and Gaussian basis functions.
 
-    Parameters:
-    lr (NonLinearRegression): Fitted model object.
-    x_values: Original x values used for fitting.
-    y_values_noise: Noisy y values.
-    mu: Centers of the Gaussian bases.
-    num_bases: Number of Gaussian basis functions.
-    gaussian_func (function): Function to compute the Gaussian basis.
-    func (function): True function to compare with the fit.
-    precision (int): Number of data points for plotting (default: 1000).
-    data_range (tuple): The range of x values (default: (0, 20)).
-    output_folder: Folder where plots will be saved (default: "../Results").
+
+    :param lr (NonLinearRegression): Fitted model object.
+    :param x_values: Original x values used for fitting.
+    :param y_values_noise: Noisy y values.
+    :param mu: Centers of the Gaussian bases.
+    :param num_bases: Number of Gaussian basis functions.
+    :param gaussian_func: Function to compute the Gaussian basis.
+    :param func : True function to compare with the fit.
+    :param precision: Number of data points for plotting (default: 1000).
+    :param data_range : The range of x values (default: (0, 20)).
+    :param output_folder: Folder where plots will be saved (default: "../Results").
     """
 
     # Recompute phi for the higher-precision x values (for plotting)
@@ -154,14 +154,61 @@ def plot_sse(
     output_folder="../Results",
     filename="SSE",
     title="Sum of Squared Errors vs. Number of Bases",
+    log_scale=False,
 ):
-    """Plot the sum of squared errors"""
+    """
+    Plot the sum of squared errors
+    :param num_bases_range: number of Gaussian basis functions.
+    :param sse_list: list of sum of squared errors vs. number of bases.
+    :param output_folder: The folder where the plot will be saved (default is "../Results").
+    :param filename: The name of the file without extension (default is "SSE").
+    :param title: Title of the graph (default is "Sum of Squared Errors vs. Number of Bases").
+    :param log_scale: If True, y is logarithmic scale.
+    :return:
+    """
+
     plt.figure(figsize=(10, 6))
     plt.plot(num_bases_range, sse_list, marker="o", label="SSE", color="blue")
     plt.title(title)
     plt.xlabel("Number of Bases")
     plt.ylabel("Sum of Squared Errors")
     plt.xticks(num_bases_range)
+    if log_scale:
+        plt.yscale("log")
+    plt.legend()
+    plt.grid()
+    plot_path = os.path.join(output_folder, filename)
+    plt.savefig(plot_path)
+    plt.close()
+
+
+def plot_average_sse(
+    num_bases_range,
+    sse_list,
+    output_folder="../Results",
+    filename="Average SSE",
+    title="Average Sum of Squared Errors vs. Number of Bases",
+    log_scale=False,
+):
+    """
+    Plot the average sum of squared errors
+    :param num_bases_range: number of Gaussian basis functions.
+    :param sse_list: list of sum of squared errors vs. number of bases.
+    :param output_folder: Folder where plots will be saved (default: "../Results").
+    :param filename: Name of the file to save the plots (default: "Average SSE").
+    :param title: Title of the graph (default: "Average Sum of Squared Errors vs. Number of Bases").
+    :param log_scale: If True, y is set to log scale
+    :return: Nothing
+    """
+    """Plot the sum of squared errors"""
+    plt.figure(figsize=(10, 6))
+    plt.plot(num_bases_range, sse_list, marker="o", label="Average SSE", color="blue")
+    plt.title(title)
+    plt.xlabel("Number of Bases")
+    plt.ylabel("Sum of Squared Errors")
+    plt.xticks(num_bases_range)
+    if log_scale:
+        plt.yscale("log")
     plt.legend()
     plt.grid()
     plot_path = os.path.join(output_folder, filename)
@@ -170,8 +217,23 @@ def plot_sse(
 
 
 def plot_average_fitted_models(
-    x, all_fitted_models, func, num_bases, output_folder="../Results"
+    x,
+    all_fitted_models,
+    func,
+    num_bases,
+    output_folder="../Results",
+    rescale_view=False,
 ):
+    """
+    Plot the average of fitted models along with the individual models and the true function.
+    :param x: linspace of x values for plotting
+    :param all_fitted_models: All fitted models in an array.
+    :param func: True function to compare with the fit.
+    :param num_bases: number of Gaussian basis functions.
+    :param output_folder: Folder where plots will be saved (default: "../Results").
+    :param rescale_view: Rescale the view of the fitted models before plotting.
+    :return: Nothing
+    """
     avg_fitted_model = np.mean(all_fitted_models, axis=0)
     plt.plot(x, avg_fitted_model, "r", label="Fitted Model")
 
@@ -183,11 +245,19 @@ def plot_average_fitted_models(
         else:
             plt.plot(x, all_fitted_models[d], "g")  # No label for subsequent lines
 
-    plt.plot(x, func(x), "b", label="Actual Data")
+    true_function_values = func(x)
+    plt.plot(x, true_function_values, "b", label="Actual Data")
     plt.xlabel("x")
     plt.ylabel("y")
     plt.title(f"Fitted Models and Bias-Variance Visualization (Bases={num_bases})")
     plt.legend()
+
+    if rescale_view:
+        plt.ylim(
+            bottom=np.min(true_function_values) * 1.2,
+            top=np.max(true_function_values) * 1.2,
+        )
+
     plot_path = os.path.join(
         output_folder,
         f"Fitted_Models_and_Bias-Variance_Visualization_(Bases={num_bases})",
