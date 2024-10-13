@@ -167,3 +167,30 @@ def plot_sse(
     plot_path = os.path.join(output_folder, filename)
     plt.savefig(plot_path)
     plt.close()
+
+
+def plot_average_fitted_models(
+    x, all_fitted_models, func, num_bases, output_folder="../Results"
+):
+    avg_fitted_model = np.mean(all_fitted_models, axis=0)
+    plt.plot(x, avg_fitted_model, "r", label="Fitted Model")
+
+    for d in range(len(all_fitted_models)):
+        if d == 0:
+            plt.plot(
+                x, all_fitted_models[d], "g", label="All Fitted Models"
+            )  # Add label only once
+        else:
+            plt.plot(x, all_fitted_models[d], "g")  # No label for subsequent lines
+
+    plt.plot(x, func(x), "b", label="Actual Data")
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title(f"Fitted Models and Bias-Variance Visualization (Bases={num_bases})")
+    plt.legend()
+    plot_path = os.path.join(
+        output_folder,
+        f"Fitted_Models_and_Bias-Variance_Visualization_(Bases={num_bases})",
+    )
+    plt.savefig(plot_path)
+    plt.close()

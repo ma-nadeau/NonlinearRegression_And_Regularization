@@ -152,7 +152,59 @@ def sum_of_squared_errors():
     )
 
 
+def bias_variance_tradeoff_analysis():
+    data_range = (0.0, 20.0)
+    n_samples = 100
+    noise_mean = 0.0
+    noise_variance = 1.0
+    noise_multiple = 1.0
+
+    precision = 1000
+    x = np.linspace(0, 20, precision)
+
+    # Plot non-linear regression for number of bases 0, 10 20 ,..., 100
+    for num_bases in range(0, 101, 10):
+
+        all_fitted_models = []
+
+        # repeat the process 10 times per number bases
+        for i in range(10):
+            # Generate 100 datapoints in range [0,20]
+            x_values, y_values_noise, y_values = generate_synthetic_data(
+                sinusoidal_function_for_synthetic_data,
+                data_range,
+                n_samples,
+                noise_mean,
+                noise_variance,
+                noise_multiple,
+            )
+
+            lr = NonLinearRegression(False)
+
+            # Compute basis matrix for the original data
+            mu = np.linspace(0, 20, num_bases)
+
+            phi_full = gaussian(x_values[:, None], mu[None, :], 1)
+
+            # Fit the model on the original data
+            lr.fit(phi_full, y_values_noise)
+
+            # phi for plotting
+            phi_plot = gaussian(x[:, None], mu[None, :], 1)
+            y_h = lr.predict(phi_plot)
+            all_fitted_models.append(y_h)
+
+        plot_average_fitted_models(
+            x,
+            all_fitted_models,
+            sinusoidal_function_for_synthetic_data,
+            num_bases,
+            output_folder="../Results",
+        )
+
+
 if __name__ == "__main__":
-    gaussian_basis()
-    model_fitting()
-    sum_of_squared_errors()
+    # gaussian_basis()
+    # model_fitting()
+    # sum_of_squared_errors()
+    bias_variance_tradeoff_analysis()
