@@ -235,7 +235,6 @@ def plot_average_fitted_models(
     :return: Nothing
     """
     avg_fitted_model = np.mean(all_fitted_models, axis=0)
-    plt.plot(x, avg_fitted_model, "r", label="Fitted Model")
 
     for d in range(len(all_fitted_models)):
         if d == 0:
@@ -246,6 +245,7 @@ def plot_average_fitted_models(
             plt.plot(x, all_fitted_models[d], "g")  # No label for subsequent lines
 
     true_function_values = func(x)
+    plt.plot(x, avg_fitted_model, "r", label="Fitted Model")
     plt.plot(x, true_function_values, "b", label="Actual Data")
     plt.xlabel("x")
     plt.ylabel("y")
