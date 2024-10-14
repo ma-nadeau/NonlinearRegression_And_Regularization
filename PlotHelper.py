@@ -4,6 +4,7 @@ import pandas as pd
 import seaborn as sns
 import os
 from typing import Callable, Tuple, Optional
+import itertools
 
 
 def plot_real_data_and_noisy_data(
@@ -264,3 +265,100 @@ def plot_average_fitted_models(
     )
     plt.savefig(plot_path)
     plt.close()
+
+
+def plot_contour(f, x1bound, x2bound, resolution, ax):
+    x1range = np.linspace(x1bound[0], x1bound[1], resolution)
+    x2range = np.linspace(x2bound[0], x2bound[1], resolution)
+    xg, yg = np.meshgrid(x1range, x2range)
+    zg = np.zeros_like(xg)
+    for i,j in itertools.product(range(resolution), range(resolution)):
+        zg[i,j] = f([xg[i,j], yg[i,j]])
+    ax.contour(xg, yg, zg, 100)
+    return ax
+
+def plot_cost_func_contour(x,y):
+    cost = lambda w: .5 * np.mean((w[0] + w[1] * x - y) ** 2)
+    l2_penalty = lambda w: np.dot(w, w) / 2
+    l1_penalty = lambda w: np.sum(np.abs(w))
+    strength = [5]
+    fig, axes = plt.subplots(ncols=3, nrows=1, constrained_layout=True, figsize=(15, 5))
+    plot_contour(cost, [-20, 20], [-20, 20], 50, axes[0])
+    axes[0].set_title(r'cost function $J(w)$')
+    plot_contour(l2_penalty, [-20, 20], [-20, 20], 50, axes[1])
+    axes[1].set_title(r'L2 reg. $||w||_2^2$')
+    for i in range(len(strength)):
+        cost_plus_l2 = lambda w: cost(w) + strength[i] * l2_penalty(w)
+        plot_contour(cost_plus_l2, [-20, 20], [-20, 20], 50, axes[i + 2])
+        axes[i + 2].set_title(r'L2 reg. cost $J(w) + ' + str(strength[i]) + ' ||w||_2^2$')
+    plot_path = os.path.join(
+        "../Results",
+        f"Cost_L2_strength_5",
+    )
+    plt.savefig(plot_path)
+    plt.close()
+    strength = [10,15,20]
+    fig, axes = plt.subplots(ncols=3, nrows=1, constrained_layout=True, figsize=(15, 5))
+    for i in range(len(strength)):
+        cost_plus_l2 = lambda w: cost(w) + strength[i] * l2_penalty(w)
+        plot_contour(cost_plus_l2, [-20, 20], [-20, 20], 50, axes[i])
+        axes[i].set_title(r'L2 reg. cost $J(w) + ' + str(strength[i]) + ' ||w||_2^2$')
+    plot_path = os.path.join(
+        "../Results",
+        f"Cost_L2_strength_10_15_20",
+    )
+    plt.savefig(plot_path)
+    plt.close()
+    strength = [5]
+    fig, axes = plt.subplots(ncols=3, nrows=1, constrained_layout=True, figsize=(15, 5))
+    plot_contour(cost, [-20, 20], [-20, 20], 50, axes[0])
+    axes[0].set_title(r'cost function $J(w)$')
+    plot_contour(l1_penalty, [-20, 20], [-20, 20], 50, axes[1])
+    axes[1].set_title(r'L1 reg. $||w||_2^2$')
+    for i in range(len(strength)):
+        cost_plus_l1 = lambda w: cost(w) + strength[i] * l1_penalty(w)
+        plot_contour(cost_plus_l1, [-20, 20], [-20, 20], 50, axes[i + 2])
+        axes[i + 2].set_title(r'L1 reg. cost $J(w) + ' + str(strength[i]) + ' ||w||_2^2$')
+    plot_path = os.path.join(
+        "../Results",
+        f"Cost_L1_strength_5",
+    )
+    plt.savefig(plot_path)
+    plt.close()
+    strength = [10, 15, 20]
+    fig, axes = plt.subplots(ncols=3, nrows=1, constrained_layout=True, figsize=(15, 5))
+    for i in range(len(strength)):
+        cost_plus_l1 = lambda w: cost(w) + strength[i] * l1_penalty(w)
+        plot_contour(cost_plus_l1, [-20, 20], [-20, 20], 50, axes[i])
+        axes[i].set_title(r'L1 reg. cost $J(w) + ' + str(strength[i]) + ' ||w||_2^2$')
+    plot_path = os.path.join(
+        "../Results",
+        f"Cost_L1_strength_10_15_20",
+    )
+    plt.savefig(plot_path)
+    plt.close()
+
+def plot_gradient_descent(current_cost,optimizer,axes,reg_coef,L2 = True):
+    plot_contour(current_cost, [-20, 20], [-5, 5], 50, axes)
+    w_hist = np.vstack(optimizer.w_history)  # T x 2
+    axes.plot(w_hist[:, 1], w_hist[:, 0], '.r', alpha=.8)
+    axes.plot(w_hist[:, 1], w_hist[:, 0], '-r', alpha=.3)
+    axes.set_xlabel(r'$w_0$')
+    axes.set_ylabel(r'$w_1$')
+    axes.set_title(f' lambda = {reg_coef}')
+    axes.set_xlim([-20, 20])
+    axes.set_ylim([-5, 5])
+    if L2:
+        plot_path = os.path.join(
+            "../Results",
+            f"L2_Gradient_descent_lambda = {reg_coef}",
+        )
+        plt.savefig(plot_path)
+        plt.close()
+    else:
+        plot_path = os.path.join(
+            "../Results",
+            f"L1_Gradient_descent_lambda = {reg_coef}",
+        )
+        plt.savefig(plot_path)
+        plt.close()

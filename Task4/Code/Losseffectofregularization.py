@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import itertools
+import os
+from Assignment2.PlotHelper import *
 
 N = 50
 x = np.linspace(0, 10, N)
@@ -104,76 +106,27 @@ class L1_Regression:
         yh = x @ self.w
         return yh
 
-def plot_contour(f, x1bound, x2bound, resolution, ax):
-    x1range = np.linspace(x1bound[0], x1bound[1], resolution)
-    x2range = np.linspace(x2bound[0], x2bound[1], resolution)
-    xg, yg = np.meshgrid(x1range, x2range)
-    zg = np.zeros_like(xg)
-    for i,j in itertools.product(range(resolution), range(resolution)):
-        zg[i,j] = f([xg[i,j], yg[i,j]])
-    ax.contour(xg, yg, zg, 100)
-    return ax
 
-cost = lambda w: .5*np.mean((w[0] + w[1]*x - y)**2)
-l2_penalty = lambda w: np.dot(w,w)/2
+l2_penalty = lambda w: np.dot(w, w) / 2
 l1_penalty = lambda w: np.sum(np.abs(w))
-strength = [5]
-fig, axes = plt.subplots(ncols=2+len(strength), nrows=1, constrained_layout=True, figsize=(15, 5))
-plot_contour(cost, [-20,20], [-20,20], 50, axes[0])
-axes[0].set_title(r'cost function $J(w)$')
-plot_contour(l2_penalty, [-20,20], [-20,20], 50, axes[1])
-axes[1].set_title(r'L2 reg. $||w||_2^2$')
-for i in range( len(strength)):
-    cost_plus_l2 = lambda w: cost(w) + strength[i]*l2_penalty(w)
-    plot_contour(cost_plus_l2, [-20,20], [-20,20], 50, axes[i+2])
-    axes[i+2].set_title(r'L2 reg. cost $J(w) + '+str(strength[i])+' ||w||_2^2$')
+plot_cost_func_contour(x, y)
 
+cost2 = lambda w, reg: .5 * np.mean((w[0] + w[1] * x - y) ** 2) + reg * l2_penalty(w)
+reg_list = [0, 1, 2, 3, 4, 5]
 
-fig, axes = plt.subplots(ncols=2+len(strength), nrows=1, constrained_layout=True, figsize=(15, 5))
-plot_contour(cost, [-20,20], [-20,20], 50, axes[0])
-axes[0].set_title(r'cost function $J(w)$')
-plot_contour(l1_penalty, [-20,20], [-20,20], 50, axes[1])
-axes[1].set_title(r'L1 reg. $||w||$')
-for i in range( len(strength)):
-    cost_plus_l1 = lambda w: cost(w) + strength[i]*l1_penalty(w)
-    plot_contour(cost_plus_l1, [-20,20], [-20,20], 50, axes[i+2])
-    axes[i+2].set_title(r'L1 reg. cost $J(w) + '+str(strength[i])+' ||w||$')
-
-
-cost2 = lambda w, reg: .5*np.mean((w[0] + w[1]*x - y)**2) + reg*l2_penalty(w)
-reg_list = [0, 5, 30]
-fig, axes = plt.subplots(ncols=len(reg_list), nrows=1, constrained_layout=True, figsize=(15, 5))
 for i, reg_coef in enumerate(reg_list):
-    optimizer = GradientDescent(learning_rate=.01, max_iters=50, record_history=True)
+    fig, axes = plt.subplots(ncols=1, nrows=1, constrained_layout=True, figsize=(15, 5))
+    optimizer = GradientDescent(learning_rate=.01, max_iters=1000, record_history=True)
     model = L2_Regression(optimizer, l2_reg=reg_coef)
-    model.fit(x,y, optimizer)
+    model.fit(x, y, optimizer)
     current_cost = lambda w: cost2(w, reg_coef)
-    plot_contour(current_cost, [-20,20], [-5,5], 50, axes[i])
-    w_hist = np.vstack(optimizer.w_history)# T x 2
-    axes[i].plot(w_hist[:,1], w_hist[:,0], '.r', alpha=.8)
-    axes[i].plot(w_hist[:,1], w_hist[:,0], '-r', alpha=.3)
-    axes[i].set_xlabel(r'$w_0$')
-    axes[i].set_ylabel(r'$w_1$')
-    axes[i].set_title(f' lambda = {reg_coef}')
-    axes[i].set_xlim([-20,20])
-    axes[i].set_ylim([-5,5])
+    plot_gradient_descent(current_cost, optimizer, axes, reg_coef)
 
-cost1 = lambda w, reg: .5*np.mean((w[0] + w[1]*x - y)**2) + reg*l1_penalty(w)
-reg_list = [0, 5,30]
-fig, axes = plt.subplots(ncols=len(reg_list), nrows=1, constrained_layout=True, figsize=(15, 5))
+cost1 = lambda w, reg: .5 * np.mean((w[0] + w[1] * x - y) ** 2) + reg * l1_penalty(w)
 for i, reg_coef in enumerate(reg_list):
-    optimizer = GradientDescent(learning_rate=.01, max_iters=50, record_history=True)
+    fig, axes = plt.subplots(ncols=1, nrows=1, constrained_layout=True, figsize=(15, 5))
+    optimizer = GradientDescent(learning_rate=.01, max_iters=1000, record_history=True)
     model = L1_Regression(optimizer, l1_reg=reg_coef)
-    model.fit(x,y, optimizer)
+    model.fit(x, y, optimizer)
     current_cost = lambda w: cost1(w, reg_coef)
-    plot_contour(current_cost, [-20,20], [-5,5], 50, axes[i])
-    w_hist = np.vstack(optimizer.w_history)# T x 2
-    axes[i].plot(w_hist[:,1], w_hist[:,0], '.r', alpha=.8)
-    axes[i].plot(w_hist[:,1], w_hist[:,0], '-r', alpha=.3)
-    axes[i].set_xlabel(r'$w_0$')
-    axes[i].set_ylabel(r'$w_1$')
-    axes[i].set_title(f' lambda = {reg_coef}')
-    axes[i].set_xlim([-20,20])
-    axes[i].set_ylim([-5,5])
-    plt.savefig(f'plot_lambda_{reg_coef}.png')  # Save the figure to a file
-    plt.close()
+    plot_gradient_descent(current_cost, optimizer, axes, reg_coef, False)
