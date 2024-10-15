@@ -77,6 +77,10 @@ def sinusoidal_function_for_synthetic_data(x):
     return np.sin(np.sqrt(x)) + np.cos(x) + np.sin(x)
 
 
+def other_test_function_for_synthetic_data(x):
+    return np.sin(x) + 0.5 * x * np.cos(x) + x
+
+
 def linear_function_for_synthetic_data(x):
     """
     linear function for synthetic data.

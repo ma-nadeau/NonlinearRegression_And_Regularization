@@ -147,6 +147,7 @@ def plot_model_fit(
     # Add title and legend
     plt.title(f"Fitting with {num_bases} Gaussian Bases")
     plt.legend()
+    plt.grid(True)
 
     os.makedirs(output_folder, exist_ok=True)
 
@@ -272,6 +273,7 @@ def plot_average_fitted_models(
         f"Fitted Models and Bias-Variance Visualization ({basis_name} Bases={num_bases})"
     )
     plt.legend()
+    plt.grid(True)
 
     if rescale_view:
         plt.ylim(

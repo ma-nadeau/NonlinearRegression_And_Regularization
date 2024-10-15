@@ -10,11 +10,14 @@ from Assignment2.Helper import (
     train_test_split,
     calculate_sse,
     sigmoid,
+    other_test_function_for_synthetic_data,
 )
 from Assignment2.PlotHelper import *
 
 
-def model_fitting(basis_func=gaussian):
+def model_fitting(
+    basis_func=gaussian, distribution=sinusoidal_function_for_synthetic_data
+):
     """
     Plots the model fitting for Part 1
     :return:
@@ -28,7 +31,7 @@ def model_fitting(basis_func=gaussian):
 
     # Generate 100 datapoints in range [0,20]
     x_values, y_values_noise, y_values = generate_synthetic_data(
-        sinusoidal_function_for_synthetic_data,
+        distribution,
         data_range,
         n_samples,
         noise_mean,
@@ -42,7 +45,7 @@ def model_fitting(basis_func=gaussian):
         y_values_noise,
         y_values,
         output_folder="../Results",
-        func=sinusoidal_function_for_synthetic_data,
+        func=distribution,
     )
 
     for num_bases in range(0, 101, 10):
@@ -67,7 +70,7 @@ def model_fitting(basis_func=gaussian):
             mu,
             num_bases,
             basis_func,
-            sinusoidal_function_for_synthetic_data,
+            distribution,
             precision=10000,
             data_range=(0, 20),
             output_folder="../Results",
@@ -81,7 +84,7 @@ def model_fitting(basis_func=gaussian):
             mu,
             num_bases,
             basis_func,
-            sinusoidal_function_for_synthetic_data,
+            distribution,
             precision=10000,
             data_range=(0, 20),
             output_folder="../Results",
@@ -110,7 +113,9 @@ def basis_function(func=gaussian):
         )
 
 
-def sum_of_squared_errors(basis_func=gaussian):
+def sum_of_squared_errors(
+    basis_func=gaussian, distribution=sinusoidal_function_for_synthetic_data
+):
     """plots the sum of squared errors for Part 1"""
 
     data_range = (0.0, 20.0)
@@ -121,7 +126,7 @@ def sum_of_squared_errors(basis_func=gaussian):
 
     # Generate 100 datapoints in range [0,20]
     x_values, y_values_noise, y_values = generate_synthetic_data(
-        sinusoidal_function_for_synthetic_data,
+        distribution,
         data_range,
         n_samples,
         noise_mean,
@@ -138,7 +143,7 @@ def sum_of_squared_errors(basis_func=gaussian):
         y_train,
         y_train_true,
         output_folder="../Results",
-        func=sinusoidal_function_for_synthetic_data,
+        func=distribution,
         filename="Train_Data_and_Noisy_Data_Distribution",
         graph_title="Synthetic Data Generation: True vs. Noisy Data",
     )
@@ -192,7 +197,9 @@ def sum_of_squared_errors(basis_func=gaussian):
     )
 
 
-def bias_variance_tradeoff_analysis(basis_func=gaussian):
+def bias_variance_tradeoff_analysis(
+    basis_func=gaussian, distribution=sinusoidal_function_for_synthetic_data
+):
     """
     Plots the bias variance tradeoff analysis of Part 2
     """
@@ -224,7 +231,7 @@ def bias_variance_tradeoff_analysis(basis_func=gaussian):
         for i in range(10):
             # Generate 100 datapoints in range [0,20]
             x_values, y_values_noise, y_values = generate_synthetic_data(
-                sinusoidal_function_for_synthetic_data,
+                distribution,
                 data_range,
                 n_samples,
                 noise_mean,
@@ -274,7 +281,7 @@ def bias_variance_tradeoff_analysis(basis_func=gaussian):
         plot_average_fitted_models(
             x,
             all_fitted_models,
-            sinusoidal_function_for_synthetic_data,
+            distribution,
             num_bases,
             output_folder="../Results",
             basis_name=name,
@@ -301,7 +308,7 @@ def bias_variance_tradeoff_analysis(basis_func=gaussian):
 
 
 if __name__ == "__main__":
-    basis_function()
+
     model_fitting()
     sum_of_squared_errors()
     bias_variance_tradeoff_analysis()
@@ -309,3 +316,13 @@ if __name__ == "__main__":
     model_fitting(sigmoid)
     sum_of_squared_errors(sigmoid)
     bias_variance_tradeoff_analysis(sigmoid)
+
+    """ Used if we want to model a different function """
+    # model_fitting(distribution=other_test_function_for_synthetic_data)
+    # sum_of_squared_errors(distribution=other_test_function_for_synthetic_data)
+    # bias_variance_tradeoff_analysis(distribution=other_test_function_for_synthetic_data)
+    # model_fitting(sigmoid, distribution=other_test_function_for_synthetic_data)
+    # sum_of_squared_errors(sigmoid, distribution=other_test_function_for_synthetic_data)
+    # bias_variance_tradeoff_analysis(
+    #     sigmoid, distribution=other_test_function_for_synthetic_data
+    # )
