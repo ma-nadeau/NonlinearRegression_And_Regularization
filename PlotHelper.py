@@ -5,6 +5,8 @@ import seaborn as sns
 import os
 from typing import Callable, Tuple, Optional
 import itertools
+from Assignment2.Helper import *
+
 
 
 def plot_real_data_and_noisy_data(
@@ -86,6 +88,8 @@ def plot_model_fit(
     precision=1000,
     data_range=(0, 20),
     output_folder="../Results",
+    rescale_view=True,
+    basis_func_name="Gaussian",
 ):
     """
     Plots the model's fit, noisy data, and Gaussian basis functions.
@@ -110,12 +114,6 @@ def plot_model_fit(
     # Generate predictions for the new x values
     y_h = lr.predict(phi_plot)
 
-    # Plot the overall fit
-    plt.plot(x, y_h, "g-", label="Our fit")
-
-    # Plot the true function (without noise)
-    plt.plot(x, func(x), "b-", label="True Function")
-
     # Scatter plot for the noisy data
     plt.scatter(
         x_values,
@@ -135,16 +133,35 @@ def plot_model_fit(
             alpha=0.5,
         )
 
+        # Plot the overall fit
+    plt.plot(x, y_h, "g-", label="Our fit")
+
+    true_function_values = func(x)
+    # Plot the true function (without noise)
+    plt.plot(x, func(x), "b-", label="True Function")
+
+    if rescale_view:
+        plt.ylim(
+            bottom=np.min(true_function_values) * 1.2,
+            top=np.max(true_function_values) * 1.2,
+        )
+
     # Add title and legend
     plt.title(f"Fitting with {num_bases} Gaussian Bases")
     plt.legend()
 
     os.makedirs(output_folder, exist_ok=True)
 
-    # Save the plot
-    plot_path = os.path.join(
-        output_folder, f"Fitting with {num_bases} Gaussian Bases.png"
-    )
+    if rescale_view:
+        # Save the plot
+        plot_path = os.path.join(
+            output_folder,
+            f"Scaled Fitting with {num_bases} {basis_func_name} Bases.png",
+        )
+    else:
+        plot_path = os.path.join(
+            output_folder, f"Fitting with {num_bases} {basis_func_name} Bases.png"
+        )
     plt.savefig(plot_path)
     plt.close()
 
@@ -224,6 +241,7 @@ def plot_average_fitted_models(
     num_bases,
     output_folder="../Results",
     rescale_view=False,
+    basis_name="Gaussian",
 ):
     """
     Plot the average of fitted models along with the individual models and the true function.
@@ -236,21 +254,25 @@ def plot_average_fitted_models(
     :return: Nothing
     """
     avg_fitted_model = np.mean(all_fitted_models, axis=0)
-    plt.plot(x, avg_fitted_model, "r", label="Fitted Model")
 
     for d in range(len(all_fitted_models)):
         if d == 0:
             plt.plot(
-                x, all_fitted_models[d], "g", label="All Fitted Models"
+                x, all_fitted_models[d], color="#90EE90", label="All Fitted Models"
             )  # Add label only once
         else:
-            plt.plot(x, all_fitted_models[d], "g")  # No label for subsequent lines
+            plt.plot(
+                x, all_fitted_models[d], color="#90EE90"
+            )  # No label for subsequent lines
 
     true_function_values = func(x)
+    plt.plot(x, avg_fitted_model, "r", label="Fitted Model")
     plt.plot(x, true_function_values, "b", label="Actual Data")
     plt.xlabel("x")
     plt.ylabel("y")
-    plt.title(f"Fitted Models and Bias-Variance Visualization (Bases={num_bases})")
+    plt.title(
+        f"Fitted Models and Bias-Variance Visualization ({basis_name} Bases={num_bases})"
+    )
     plt.legend()
 
     if rescale_view:
@@ -261,7 +283,7 @@ def plot_average_fitted_models(
 
     plot_path = os.path.join(
         output_folder,
-        f"Fitted_Models_and_Bias-Variance_Visualization_(Bases={num_bases})",
+        f"Fitted_Models_and_Bias-Variance_Visualization_({basis_name} Bases={num_bases})",
     )
     plt.savefig(plot_path)
     plt.close()
