@@ -339,14 +339,14 @@ def plot_cost_func_contour(x,y):
     plt.close()
 
 def plot_gradient_descent(current_cost,optimizer,axes,reg_coef,L2 = True):
-    plot_contour(current_cost, [-20, 20], [-5, 5], 50, axes)
+    plot_contour(current_cost, [-2, 2], [-5, 5], 50, axes)
     w_hist = np.vstack(optimizer.w_history)  # T x 2
     axes.plot(w_hist[:, 1], w_hist[:, 0], '.r', alpha=.8)
     axes.plot(w_hist[:, 1], w_hist[:, 0], '-r', alpha=.3)
     axes.set_xlabel(r'$w_0$')
     axes.set_ylabel(r'$w_1$')
     axes.set_title(f' lambda = {reg_coef}')
-    axes.set_xlim([-20, 20])
+    axes.set_xlim([-2, 2])
     axes.set_ylim([-5, 5])
     if L2:
         plot_path = os.path.join(
@@ -362,3 +362,18 @@ def plot_gradient_descent(current_cost,optimizer,axes,reg_coef,L2 = True):
         )
         plt.savefig(plot_path)
         plt.close()
+
+
+def plot_T4_syth_data(x,y):
+    plt.scatter(x, y, label="Synthetic Data", color='blue')
+    plt.title("y = -4x + 10 + 2ε")
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.grid(True)
+    plt.legend()
+    plot_path = os.path.join(
+        "../Results",
+        f"T4_syth_data",
+    )
+    plt.savefig(plot_path)
+    plt.close()
