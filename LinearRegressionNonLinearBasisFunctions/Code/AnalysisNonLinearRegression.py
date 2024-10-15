@@ -187,7 +187,7 @@ def sum_of_squared_errors(basis_func=gaussian):
         range_of_value,
         sse_train_list,
         output_folder="../Results",
-        filename=f"SSE (Test) for {name} Bases",
+        filename=f"SSE (Train) for {name} Bases",
         title=f"Train - Sum of Squared Errors vs. Number of {name} Bases",
     )
 
@@ -287,7 +287,7 @@ def bias_variance_tradeoff_analysis(basis_func=gaussian):
         range_of_value,
         sse_test_list,
         output_folder="../Results",
-        filename="Average SSE (Test)",
+        filename=f"Average SSE (Test) for {name} bases",
         title="Average Test - Sum of Squared Errors vs. Number of Bases",
         log_scale=True,
     )
@@ -295,7 +295,7 @@ def bias_variance_tradeoff_analysis(basis_func=gaussian):
         range_of_value,
         sse_train_list,
         output_folder="../Results",
-        filename="Average SSE (Train)",
+        filename=f"Average SSE (Train) for {name} bases",
         title="Average Train - Sum of Squared Errors vs. Number of Bases",
     )
 
