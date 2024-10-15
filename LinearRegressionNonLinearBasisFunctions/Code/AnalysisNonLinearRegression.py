@@ -9,6 +9,7 @@ from Assignment2.Helper import (
     gaussian,
     train_test_split,
     calculate_sse,
+    sigmoid,
 )
 from Assignment2.PlotHelper import *
 
@@ -68,8 +69,22 @@ def model_fitting():
             output_folder="../Results",
         )
 
+        plot_model_fit(
+            lr,
+            x_values,
+            y_values_noise,
+            mu,
+            num_bases,
+            gaussian,
+            sinusoidal_function_for_synthetic_data,
+            precision=10000,
+            data_range=(0, 20),
+            output_folder="../Results",
+            rescale_view=False,
+        )
 
-def gaussian_basis():
+
+def basis_function(func=gaussian):
     """
     Plots the gaussian basis for Part 1
     """
@@ -79,7 +94,7 @@ def gaussian_basis():
     amount = 100  # number of
     for i in range(0, amount + 1, 10):
         mu = np.linspace(0, 20, i)
-        phi = gaussian(x[:, None], mu[None, :], 1)
+        phi = func(x[:, None], mu[None, :], 1)
         plot_gaussian_bases(
             x, phi, i, filename=f"Gaussian_Bases_Distribution_for_{i}_bases"
         )
@@ -173,7 +188,7 @@ def bias_variance_tradeoff_analysis():
     noise_variance = 1.0
     noise_multiple = 1.0
 
-    precision = 100
+    precision = 10000
     x = np.linspace(0, 20, precision)
 
     sse_test_list = []
@@ -267,7 +282,8 @@ def bias_variance_tradeoff_analysis():
 
 
 if __name__ == "__main__":
-    gaussian_basis()
+    basis_function()
     model_fitting()
     sum_of_squared_errors()
     bias_variance_tradeoff_analysis()
+    basis_function()

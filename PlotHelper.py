@@ -148,10 +148,15 @@ def plot_model_fit(
 
     os.makedirs(output_folder, exist_ok=True)
 
-    # Save the plot
-    plot_path = os.path.join(
-        output_folder, f"Fitting with {num_bases} Gaussian Bases.png"
-    )
+    if rescale_view:
+        # Save the plot
+        plot_path = os.path.join(
+            output_folder, f"Scaled Fitting with {num_bases} Gaussian Bases.png"
+        )
+    else:
+        plot_path = os.path.join(
+            output_folder, f"Fitting with {num_bases} Gaussian Bases.png"
+        )
     plt.savefig(plot_path)
     plt.close()
 
@@ -247,10 +252,12 @@ def plot_average_fitted_models(
     for d in range(len(all_fitted_models)):
         if d == 0:
             plt.plot(
-                x, all_fitted_models[d], "g", label="All Fitted Models"
+                x, all_fitted_models[d], color="#90EE90", label="All Fitted Models"
             )  # Add label only once
         else:
-            plt.plot(x, all_fitted_models[d], "g")  # No label for subsequent lines
+            plt.plot(
+                x, all_fitted_models[d], color="#90EE90"
+            )  # No label for subsequent lines
 
     true_function_values = func(x)
     plt.plot(x, avg_fitted_model, "r", label="Fitted Model")

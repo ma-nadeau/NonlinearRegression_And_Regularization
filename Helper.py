@@ -24,8 +24,8 @@ def generate_synthetic_data(
     :param noise_multiple: A value to multiply the noise with (i.e. 2.0)
     :return:  A tuple containing (x_values, y_values_with_noise, true_y_values)
     """
-    x_values = np.random.uniform(data_range[0], data_range[1], n_samples)
-
+    # x_values = np.random.uniform(data_range[0], data_range[1], n_samples)
+    x_values = np.linspace(data_range[0], data_range[1], n_samples)
     y_values = func(x_values)
 
     noise = np.random.normal(noise_mean, noise_variance, n_samples)
@@ -84,6 +84,10 @@ def linear_function_for_synthetic_data(x):
     :return: function for synthetic data.
     """
     return -4.0 * x + 10.0
+
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
 
 
 def gaussian(x, mu, sigma):
