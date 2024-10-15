@@ -75,10 +75,14 @@ def gaussian_basis():
     """
     precision = 1000  # number of data point per plots
     x = np.linspace(0, 20, precision)
+
     amount = 100  # number of
-    mu = np.linspace(0, 20, amount)
-    phi = gaussian(x[:, None], mu[None, :], 1)
-    plot_gaussian_bases(x, phi, amount)
+    for i in range(0, amount + 1, 10):
+        mu = np.linspace(0, 20, i)
+        phi = gaussian(x[:, None], mu[None, :], 1)
+        plot_gaussian_bases(
+            x, phi, i, filename=f"Gaussian_Bases_Distribution_for_{i}_bases"
+        )
 
 
 def sum_of_squared_errors():
@@ -164,19 +168,19 @@ def bias_variance_tradeoff_analysis():
     Plots the bias variance tradeoff analysis of Part 2
     """
     data_range = (0.0, 20.0)
-    n_samples = 100
+    n_samples = 1000
     noise_mean = 0.0
     noise_variance = 1.0
     noise_multiple = 1.0
 
-    precision = 1000
+    precision = 100
     x = np.linspace(0, 20, precision)
 
     sse_test_list = []
     sse_train_list = []
 
     # Plot non-linear regression for number of bases 0, 10 20 ,..., 100
-    range_of_value = range(0, 101, 10)
+    range_of_value = range(0, 101, 5)
     for num_bases in range_of_value:
 
         all_fitted_models = []

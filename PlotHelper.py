@@ -85,6 +85,7 @@ def plot_model_fit(
     precision=1000,
     data_range=(0, 20),
     output_folder="../Results",
+    rescale_view=True,
 ):
     """
     Plots the model's fit, noisy data, and Gaussian basis functions.
@@ -109,12 +110,6 @@ def plot_model_fit(
     # Generate predictions for the new x values
     y_h = lr.predict(phi_plot)
 
-    # Plot the overall fit
-    plt.plot(x, y_h, "g-", label="Our fit")
-
-    # Plot the true function (without noise)
-    plt.plot(x, func(x), "b-", label="True Function")
-
     # Scatter plot for the noisy data
     plt.scatter(
         x_values,
@@ -132,6 +127,19 @@ def plot_model_fit(
             lr.weights[d] * phi_plot[:, d],  # Contribution of each basis function
             "-",
             alpha=0.5,
+        )
+
+        # Plot the overall fit
+    plt.plot(x, y_h, "g-", label="Our fit")
+
+    true_function_values = func(x)
+    # Plot the true function (without noise)
+    plt.plot(x, func(x), "b-", label="True Function")
+
+    if rescale_view:
+        plt.ylim(
+            bottom=np.min(true_function_values) * 1.2,
+            top=np.max(true_function_values) * 1.2,
         )
 
     # Add title and legend

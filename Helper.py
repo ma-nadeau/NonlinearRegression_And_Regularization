@@ -16,7 +16,7 @@ def generate_synthetic_data(
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
 
-    :param func: a function to generate synthetic data
+    :param func: The function you want to generate synthetic data from :)
     :param data_range: a tuple of the range of data (i.e (0.0,20.0))
     :param n_samples: a number of samples (i.e. 100)
     :param noise_mean:
