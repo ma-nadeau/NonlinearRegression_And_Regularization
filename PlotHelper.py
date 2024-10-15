@@ -4,6 +4,7 @@ import pandas as pd
 import seaborn as sns
 import os
 from typing import Callable, Tuple, Optional
+from Assignment2.Helper import *
 
 
 def plot_real_data_and_noisy_data(
@@ -86,6 +87,7 @@ def plot_model_fit(
     data_range=(0, 20),
     output_folder="../Results",
     rescale_view=True,
+    basis_func_name="Gaussian",
 ):
     """
     Plots the model's fit, noisy data, and Gaussian basis functions.
@@ -151,11 +153,12 @@ def plot_model_fit(
     if rescale_view:
         # Save the plot
         plot_path = os.path.join(
-            output_folder, f"Scaled Fitting with {num_bases} Gaussian Bases.png"
+            output_folder,
+            f"Scaled Fitting with {num_bases} {basis_func_name} Bases.png",
         )
     else:
         plot_path = os.path.join(
-            output_folder, f"Fitting with {num_bases} Gaussian Bases.png"
+            output_folder, f"Fitting with {num_bases} {basis_func_name} Bases.png"
         )
     plt.savefig(plot_path)
     plt.close()
@@ -236,6 +239,7 @@ def plot_average_fitted_models(
     num_bases,
     output_folder="../Results",
     rescale_view=False,
+    basis_name="Gaussian",
 ):
     """
     Plot the average of fitted models along with the individual models and the true function.
@@ -264,7 +268,9 @@ def plot_average_fitted_models(
     plt.plot(x, true_function_values, "b", label="Actual Data")
     plt.xlabel("x")
     plt.ylabel("y")
-    plt.title(f"Fitted Models and Bias-Variance Visualization (Bases={num_bases})")
+    plt.title(
+        f"Fitted Models and Bias-Variance Visualization ({basis_name} Bases={num_bases})"
+    )
     plt.legend()
 
     if rescale_view:
@@ -275,7 +281,7 @@ def plot_average_fitted_models(
 
     plot_path = os.path.join(
         output_folder,
-        f"Fitted_Models_and_Bias-Variance_Visualization_(Bases={num_bases})",
+        f"Fitted_Models_and_Bias-Variance_Visualization_({basis_name} Bases={num_bases})",
     )
     plt.savefig(plot_path)
     plt.close()

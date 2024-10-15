@@ -14,7 +14,7 @@ from Assignment2.Helper import (
 from Assignment2.PlotHelper import *
 
 
-def model_fitting():
+def model_fitting(basis_func=gaussian):
     """
     Plots the model fitting for Part 1
     :return:
@@ -51,22 +51,27 @@ def model_fitting():
 
         # Compute basis matrix for the original data
         mu = np.linspace(0, 20, num_bases)
-        phi = gaussian(x_values[:, None], mu[None, :], 1)
+        phi = basis_func(x_values[:, None], mu[None, :], 1)
 
         # Fit the model on the original data
         lr.fit(phi, y_values_noise)
 
+        if basis_func == gaussian:
+            name = "Gaussian"
+        else:
+            name = "Sigmoid"
         plot_model_fit(
             lr,
             x_values,
             y_values_noise,
             mu,
             num_bases,
-            gaussian,
+            basis_func,
             sinusoidal_function_for_synthetic_data,
             precision=10000,
             data_range=(0, 20),
             output_folder="../Results",
+            basis_func_name=name,
         )
 
         plot_model_fit(
@@ -75,12 +80,13 @@ def model_fitting():
             y_values_noise,
             mu,
             num_bases,
-            gaussian,
+            basis_func,
             sinusoidal_function_for_synthetic_data,
             precision=10000,
             data_range=(0, 20),
             output_folder="../Results",
             rescale_view=False,
+            basis_func_name=name,
         )
 
 
@@ -88,6 +94,10 @@ def basis_function(func=gaussian):
     """
     Plots the gaussian basis for Part 1
     """
+    if func == gaussian:
+        name = "Gaussian"
+    else:
+        name = "Sigmoid"
     precision = 1000  # number of data point per plots
     x = np.linspace(0, 20, precision)
 
@@ -96,11 +106,11 @@ def basis_function(func=gaussian):
         mu = np.linspace(0, 20, i)
         phi = func(x[:, None], mu[None, :], 1)
         plot_gaussian_bases(
-            x, phi, i, filename=f"Gaussian_Bases_Distribution_for_{i}_bases"
+            x, phi, i, filename=f"{name}_Bases_Distribution_for_{i}_bases"
         )
 
 
-def sum_of_squared_errors():
+def sum_of_squared_errors(basis_func=gaussian):
     """plots the sum of squared errors for Part 1"""
 
     data_range = (0.0, 20.0)
@@ -141,8 +151,8 @@ def sum_of_squared_errors():
 
         # Compute basis matrix for the original data
         mu = np.linspace(0, 20, num_bases)
-        phi_train = gaussian(x_train[:, None], mu[None, :], 1)
-        phi_test = gaussian(x_test[:, None], mu[None, :], 1)
+        phi_train = basis_func(x_train[:, None], mu[None, :], 1)
+        phi_test = basis_func(x_test[:, None], mu[None, :], 1)
 
         # Fit the model on the training data
         lr.fit(phi_train, y_train)
@@ -160,25 +170,29 @@ def sum_of_squared_errors():
         )
         sse_train_list.append(sse_train)
         sse_test_list.append(sse_test)
+    if basis_func == gaussian:
+        name = "Gaussian"
+    else:
+        name = "Sigmoid"
 
     plot_sse(
         range_of_value,
         sse_test_list,
         output_folder="../Results",
-        filename="SSE (Test)",
-        title="Test - Sum of Squared Errors vs. Number of Bases",
+        filename=f"SSE (Test) for {name} Bases",
+        title=f"Test - Sum of Squared Errors vs. Number of {name} Bases",
         log_scale=True,
     )
     plot_sse(
         range_of_value,
         sse_train_list,
         output_folder="../Results",
-        filename="SSE (Train)",
-        title="Train - Sum of Squared Errors vs. Number of Bases",
+        filename=f"SSE (Test) for {name} Bases",
+        title=f"Train - Sum of Squared Errors vs. Number of {name} Bases",
     )
 
 
-def bias_variance_tradeoff_analysis():
+def bias_variance_tradeoff_analysis(basis_func=gaussian):
     """
     Plots the bias variance tradeoff analysis of Part 2
     """
@@ -194,6 +208,10 @@ def bias_variance_tradeoff_analysis():
     sse_test_list = []
     sse_train_list = []
 
+    if basis_func == gaussian:
+        name = "Gaussian"
+    else:
+        name = "Sigmoid"
     # Plot non-linear regression for number of bases 0, 10 20 ,..., 100
     range_of_value = range(0, 101, 5)
     for num_bases in range_of_value:
@@ -220,13 +238,13 @@ def bias_variance_tradeoff_analysis():
             # Compute basis matrix for the original data
             mu = np.linspace(0, 20, num_bases)
 
-            phi_full = gaussian(x_values[:, None], mu[None, :], 1)
+            phi_full = basis_func(x_values[:, None], mu[None, :], 1)
 
             # Fit the model on the original data
             lr.fit(phi_full, y_values_noise)
 
             # phi for plotting
-            phi_plot = gaussian(x[:, None], mu[None, :], 1)
+            phi_plot = basis_func(x[:, None], mu[None, :], 1)
             y_h = lr.predict(phi_plot)
             all_fitted_models.append(y_h)
 
@@ -236,8 +254,8 @@ def bias_variance_tradeoff_analysis():
                 train_test_split(x_values, y_values_noise, y_values)
             )
 
-            phi_train = gaussian(x_train[:, None], mu[None, :], 1)
-            phi_test = gaussian(x_test[:, None], mu[None, :], 1)
+            phi_train = basis_func(x_train[:, None], mu[None, :], 1)
+            phi_test = basis_func(x_test[:, None], mu[None, :], 1)
 
             # Fit the model on the training data
             lr.fit(phi_train, y_train)
@@ -259,6 +277,7 @@ def bias_variance_tradeoff_analysis():
             sinusoidal_function_for_synthetic_data,
             num_bases,
             output_folder="../Results",
+            basis_name=name,
         )
 
         sse_test_list.append(np.mean(all_testing_sse, axis=0))
@@ -286,4 +305,7 @@ if __name__ == "__main__":
     model_fitting()
     sum_of_squared_errors()
     bias_variance_tradeoff_analysis()
-    basis_function()
+    basis_function(sigmoid)
+    model_fitting(sigmoid)
+    sum_of_squared_errors(sigmoid)
+    bias_variance_tradeoff_analysis(sigmoid)

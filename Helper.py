@@ -86,8 +86,8 @@ def linear_function_for_synthetic_data(x):
     return -4.0 * x + 10.0
 
 
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
+def sigmoid(x, mu, sigma):
+    return 1 / (1 + np.exp(-(x - mu) / sigma))
 
 
 def gaussian(x, mu, sigma):
