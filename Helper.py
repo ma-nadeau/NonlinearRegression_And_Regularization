@@ -16,7 +16,7 @@ def generate_synthetic_data(
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
 
-    :param func: a function to generate synthetic data
+    :param func: The function you want to generate synthetic data from :)
     :param data_range: a tuple of the range of data (i.e (0.0,20.0))
     :param n_samples: a number of samples (i.e. 100)
     :param noise_mean:
@@ -24,8 +24,8 @@ def generate_synthetic_data(
     :param noise_multiple: A value to multiply the noise with (i.e. 2.0)
     :return:  A tuple containing (x_values, y_values_with_noise, true_y_values)
     """
-    x_values = np.random.uniform(data_range[0], data_range[1], n_samples)
-
+    # x_values = np.random.uniform(data_range[0], data_range[1], n_samples)
+    x_values = np.linspace(data_range[0], data_range[1], n_samples)
     y_values = func(x_values)
 
     noise = np.random.normal(noise_mean, noise_variance, n_samples)
@@ -77,6 +77,10 @@ def sinusoidal_function_for_synthetic_data(x):
     return np.sin(np.sqrt(x)) + np.cos(x) + np.sin(x)
 
 
+def other_test_function_for_synthetic_data(x):
+    return np.sin(x) + 0.5 * x * np.cos(x) + x
+
+
 def linear_function_for_synthetic_data(x):
     """
     linear function for synthetic data.
@@ -84,6 +88,10 @@ def linear_function_for_synthetic_data(x):
     :return: function for synthetic data.
     """
     return -4.0 * x + 10.0
+
+
+def sigmoid(x, mu, sigma):
+    return 1 / (1 + np.exp(-(x - mu) / sigma))
 
 
 def gaussian(x, mu, sigma):
