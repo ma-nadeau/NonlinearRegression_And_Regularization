@@ -113,4 +113,4 @@ def calculate_sse(y_true, y_pred):
     :param y_pred: Predicted target values
     :return:  SSE value
     """
-    return np.sum((y_true - y_pred) ** 2)
+    return np.sum(np.square(y_true - y_pred))

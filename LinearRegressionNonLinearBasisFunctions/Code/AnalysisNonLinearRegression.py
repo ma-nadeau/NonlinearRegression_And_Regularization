@@ -193,7 +193,7 @@ def sum_of_squared_errors(
         output_folder="../Results",
         filename=f"SSE (Test) for {name} Bases",
         title=f"Test - Sum of Squared Errors vs. Number of {name} Bases",
-        log_scale=True,
+        log_scale=False,
         distribution_name=different_distribution,
     )
     plot_sse(
@@ -215,7 +215,7 @@ def bias_variance_tradeoff_analysis(
     Plots the bias variance tradeoff analysis of Part 2
     """
     data_range = (0.0, 20.0)
-    n_samples = 1000
+    n_samples = 100
     noise_mean = 0.0
     noise_variance = 1.0
     noise_multiple = 1.0
@@ -323,7 +323,7 @@ def bias_variance_tradeoff_analysis(
 
 if __name__ == "__main__":
 
-    model_fitting()
+    # model_fitting()
     sum_of_squared_errors()
     bias_variance_tradeoff_analysis()
     basis_function(sigmoid)
