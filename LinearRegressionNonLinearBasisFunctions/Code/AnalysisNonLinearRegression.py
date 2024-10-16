@@ -50,7 +50,7 @@ def model_fitting(
         func=distribution,
     )
 
-    for num_bases in range(0, 101, 5):
+    for num_bases in range(0, 101, 10):
 
         lr = NonLinearRegression(False)
 
@@ -231,7 +231,7 @@ def bias_variance_tradeoff_analysis(
     else:
         name = "Sigmoid"
     # Plot non-linear regression for number of bases 0, 10 20 ,..., 100
-    range_of_value = range(0, 101, 5)
+    range_of_value = range(0, 101, 10)
     for num_bases in range_of_value:
 
         all_fitted_models = []
