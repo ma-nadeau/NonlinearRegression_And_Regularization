@@ -9,13 +9,14 @@ from Assignment2.Helper import *
 
 
 def plot_real_data_and_noisy_data(
-        x: np.array,
-        y_noisy: np.array,
-        y_real: np.array,
-        output_folder: str = "../Results",
-        filename: str = "Data_and_Noisy_Data_Distribution",
-        graph_title: str = "Synthetic Data Generation: True vs. Noisy Data",
-        func: Optional[Callable] = None,
+    x: np.array,
+    y_noisy: np.array,
+    y_real: np.array,
+    output_folder: str = "../Results",
+    filename: str = "Data_and_Noisy_Data_Distribution",
+    graph_title: str = "Synthetic Data Generation: True vs. Noisy Data",
+    func: Optional[Callable] = None,
+    distribution_name=None,
 ):
     """
     Plots and saves a graph comparing the real data with the noisy data.
@@ -56,6 +57,8 @@ def plot_real_data_and_noisy_data(
 
     plt.grid(True)
 
+    if distribution_name is not None:
+        filename += f"_{distribution_name}"
     plot_path = os.path.join(output_folder, f"{filename}.png")
     plt.savefig(plot_path)
     plt.close()
@@ -75,18 +78,19 @@ def plot_gaussian_bases(
 
 
 def plot_model_fit(
-        lr,
-        x_values,
-        y_values_noise,
-        mu,
-        num_bases,
-        gaussian_func,
-        func,
-        precision=1000,
-        data_range=(0, 20),
-        output_folder="../Results",
-        rescale_view=True,
-        basis_func_name="Gaussian",
+    lr,
+    x_values,
+    y_values_noise,
+    mu,
+    num_bases,
+    gaussian_func,
+    func,
+    precision=1000,
+    data_range=(0, 20),
+    output_folder="../Results",
+    rescale_view=True,
+    basis_func_name="Gaussian",
+    distribution_name=None,
 ):
     """
     Plots the model's fit, noisy data, and Gaussian basis functions.
@@ -146,30 +150,35 @@ def plot_model_fit(
     # Add title and legend
     plt.title(f"Fitting with {num_bases} Gaussian Bases")
     plt.legend()
+    plt.grid(True)
 
     os.makedirs(output_folder, exist_ok=True)
 
     if rescale_view:
-        # Save the plot
-        plot_path = os.path.join(
-            output_folder,
-            f"Scaled Fitting with {num_bases} {basis_func_name} Bases.png",
-        )
+        filename = f"Scaled Fitting with {num_bases} {basis_func_name} Bases"
+
     else:
-        plot_path = os.path.join(
-            output_folder, f"Fitting with {num_bases} {basis_func_name} Bases.png"
-        )
+        filename = f"Fitting with {num_bases} {basis_func_name} Bases"
+
+    if distribution_name is not None:
+        filename += f"_{distribution_name}"
+
+    plot_path = os.path.join(
+        output_folder,
+        filename,
+    )
     plt.savefig(plot_path)
     plt.close()
 
 
 def plot_sse(
-        num_bases_range,
-        sse_list,
-        output_folder="../Results",
-        filename="SSE",
-        title="Sum of Squared Errors vs. Number of Bases",
-        log_scale=False,
+    num_bases_range,
+    sse_list,
+    output_folder="../Results",
+    filename="SSE",
+    title="Sum of Squared Errors vs. Number of Bases",
+    log_scale=False,
+    distribution_name=None,
 ):
     """
     Plot the sum of squared errors
@@ -192,18 +201,21 @@ def plot_sse(
         plt.yscale("log")
     plt.legend()
     plt.grid()
+    if distribution_name is not None:
+        filename += f"_{distribution_name}"
     plot_path = os.path.join(output_folder, filename)
     plt.savefig(plot_path)
     plt.close()
 
 
 def plot_average_sse(
-        num_bases_range,
-        sse_list,
-        output_folder="../Results",
-        filename="Average SSE",
-        title="Average Sum of Squared Errors vs. Number of Bases",
-        log_scale=False,
+    num_bases_range,
+    sse_list,
+    output_folder="../Results",
+    filename="Average SSE",
+    title="Average Sum of Squared Errors vs. Number of Bases",
+    log_scale=False,
+    distribution_name=None,
 ):
     """
     Plot the average sum of squared errors
@@ -226,19 +238,22 @@ def plot_average_sse(
         plt.yscale("log")
     plt.legend()
     plt.grid()
+    if distribution_name is not None:
+        filename += f"_{distribution_name}"
     plot_path = os.path.join(output_folder, filename)
     plt.savefig(plot_path)
     plt.close()
 
 
 def plot_average_fitted_models(
-        x,
-        all_fitted_models,
-        func,
-        num_bases,
-        output_folder="../Results",
-        rescale_view=False,
-        basis_name="Gaussian",
+    x,
+    all_fitted_models,
+    func,
+    num_bases,
+    output_folder="../Results",
+    rescale_view=False,
+    basis_name="Gaussian",
+    distribution_name=None,
 ):
     """
     Plot the average of fitted models along with the individual models and the true function.
@@ -271,16 +286,19 @@ def plot_average_fitted_models(
         f"Fitted Models and Bias-Variance Visualization ({basis_name} Bases={num_bases})"
     )
     plt.legend()
+    plt.grid(True)
 
     if rescale_view:
         plt.ylim(
             bottom=np.min(true_function_values) * 1.2,
             top=np.max(true_function_values) * 1.2,
         )
-
+    filename = f"Fitted_Models_and_Bias-Variance_Visualization_({basis_name} Bases={num_bases})"
+    if distribution_name is not None:
+        filename += f"_{distribution_name}"
     plot_path = os.path.join(
         output_folder,
-        f"Fitted_Models_and_Bias-Variance_Visualization_({basis_name} Bases={num_bases})",
+        filename,
     )
     plt.savefig(plot_path)
     plt.close()

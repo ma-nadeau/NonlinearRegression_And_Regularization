@@ -77,6 +77,10 @@ def sinusoidal_function_for_synthetic_data(x):
     return np.sin(np.sqrt(x)) + np.cos(x) + np.sin(x)
 
 
+def other_test_function_for_synthetic_data(x):
+    return np.sin(x) + 0.5 * x * np.cos(x) + x
+
+
 def linear_function_for_synthetic_data(x):
     """
     linear function for synthetic data.
@@ -109,4 +113,4 @@ def calculate_sse(y_true, y_pred):
     :param y_pred: Predicted target values
     :return:  SSE value
     """
-    return np.sum((y_true - y_pred) ** 2)
+    return np.sum(np.square(y_true - y_pred))
