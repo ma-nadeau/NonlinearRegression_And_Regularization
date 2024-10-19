@@ -8,15 +8,14 @@ import itertools
 from Assignment2.Helper import *
 
 
-
 def plot_real_data_and_noisy_data(
-    x: np.array,
-    y_noisy: np.array,
-    y_real: np.array,
-    output_folder: str = "../Results",
-    filename: str = "Data_and_Noisy_Data_Distribution",
-    graph_title: str = "Synthetic Data Generation: True vs. Noisy Data",
-    func: Optional[Callable] = None,
+        x: np.array,
+        y_noisy: np.array,
+        y_real: np.array,
+        output_folder: str = "../Results",
+        filename: str = "Data_and_Noisy_Data_Distribution",
+        graph_title: str = "Synthetic Data Generation: True vs. Noisy Data",
+        func: Optional[Callable] = None,
 ):
     """
     Plots and saves a graph comparing the real data with the noisy data.
@@ -39,7 +38,6 @@ def plot_real_data_and_noisy_data(
     plt.scatter(x, y_real, color="blue", label="True Data", alpha=0.6, marker="o")
 
     if func is not None:
-
         x_smooth = np.linspace(min(x), max(x), 100)
         y_smooth = func(x_smooth)
         plt.plot(
@@ -64,9 +62,8 @@ def plot_real_data_and_noisy_data(
 
 
 def plot_gaussian_bases(
-    x, phi, D, output_folder="../Results", filename="Gaussian_Bases_Distribution"
+        x, phi, D, output_folder="../Results", filename="Gaussian_Bases_Distribution"
 ):
-
     for d in range(D):
         plt.plot(x, phi[:, d], "-")
 
@@ -78,18 +75,18 @@ def plot_gaussian_bases(
 
 
 def plot_model_fit(
-    lr,
-    x_values,
-    y_values_noise,
-    mu,
-    num_bases,
-    gaussian_func,
-    func,
-    precision=1000,
-    data_range=(0, 20),
-    output_folder="../Results",
-    rescale_view=True,
-    basis_func_name="Gaussian",
+        lr,
+        x_values,
+        y_values_noise,
+        mu,
+        num_bases,
+        gaussian_func,
+        func,
+        precision=1000,
+        data_range=(0, 20),
+        output_folder="../Results",
+        rescale_view=True,
+        basis_func_name="Gaussian",
 ):
     """
     Plots the model's fit, noisy data, and Gaussian basis functions.
@@ -167,12 +164,12 @@ def plot_model_fit(
 
 
 def plot_sse(
-    num_bases_range,
-    sse_list,
-    output_folder="../Results",
-    filename="SSE",
-    title="Sum of Squared Errors vs. Number of Bases",
-    log_scale=False,
+        num_bases_range,
+        sse_list,
+        output_folder="../Results",
+        filename="SSE",
+        title="Sum of Squared Errors vs. Number of Bases",
+        log_scale=False,
 ):
     """
     Plot the sum of squared errors
@@ -201,12 +198,12 @@ def plot_sse(
 
 
 def plot_average_sse(
-    num_bases_range,
-    sse_list,
-    output_folder="../Results",
-    filename="Average SSE",
-    title="Average Sum of Squared Errors vs. Number of Bases",
-    log_scale=False,
+        num_bases_range,
+        sse_list,
+        output_folder="../Results",
+        filename="Average SSE",
+        title="Average Sum of Squared Errors vs. Number of Bases",
+        log_scale=False,
 ):
     """
     Plot the average sum of squared errors
@@ -235,13 +232,13 @@ def plot_average_sse(
 
 
 def plot_average_fitted_models(
-    x,
-    all_fitted_models,
-    func,
-    num_bases,
-    output_folder="../Results",
-    rescale_view=False,
-    basis_name="Gaussian",
+        x,
+        all_fitted_models,
+        func,
+        num_bases,
+        output_folder="../Results",
+        rescale_view=False,
+        basis_name="Gaussian",
 ):
     """
     Plot the average of fitted models along with the individual models and the true function.
@@ -294,82 +291,87 @@ def plot_contour(f, x1bound, x2bound, resolution, ax):
     x2range = np.linspace(x2bound[0], x2bound[1], resolution)
     xg, yg = np.meshgrid(x1range, x2range)
     zg = np.zeros_like(xg)
-    for i,j in itertools.product(range(resolution), range(resolution)):
-        zg[i,j] = f([xg[i,j], yg[i,j]])
+    for i, j in itertools.product(range(resolution), range(resolution)):
+        zg[i, j] = f([xg[i, j], yg[i, j]])
     ax.contour(xg, yg, zg, 100)
     return ax
 
-def plot_cost_func_contour(x,y):
-    cost = lambda w: .5 * np.mean((w[0] + w[1] * x - y) ** 2)
+
+def plot_cost_func_contour(x, y):
+    cost = lambda w: .5 * np.mean((w[1] + w[0] * x - y) ** 2)
     l2_penalty = lambda w: np.dot(w, w) / 2
     l1_penalty = lambda w: np.sum(np.abs(w))
-    strength = [5]
+    strength = [10]
     fig, axes = plt.subplots(ncols=3, nrows=1, constrained_layout=True, figsize=(15, 5))
     plot_contour(cost, [-20, 20], [-20, 20], 50, axes[0])
     axes[0].set_title(r'cost function $J(w)$')
     plot_contour(l2_penalty, [-20, 20], [-20, 20], 50, axes[1])
     axes[1].set_title(r'L2 reg. $||w||_2^2$')
     for i in range(len(strength)):
-        cost_plus_l2 = lambda w: cost(w) + strength[i] * l2_penalty(w)
+        cost_plus_l2 = lambda w: cost(w) + strength[i] * l2_penalty(w[0])
         plot_contour(cost_plus_l2, [-20, 20], [-20, 20], 50, axes[i + 2])
         axes[i + 2].set_title(r'L2 reg. cost $J(w) + ' + str(strength[i]) + ' ||w||_2^2$')
     plot_path = os.path.join(
         "../Results",
-        f"Cost_L2_strength_5",
+        f"Cost_L2_strength_10",
     )
     plt.savefig(plot_path)
     plt.close()
-    strength = [10,15,20]
+    strength = [20, 50, 150]
     fig, axes = plt.subplots(ncols=3, nrows=1, constrained_layout=True, figsize=(15, 5))
     for i in range(len(strength)):
-        cost_plus_l2 = lambda w: cost(w) + strength[i] * l2_penalty(w)
+        cost_plus_l2 = lambda w: cost(w) + strength[i] * l2_penalty(w[0])
         plot_contour(cost_plus_l2, [-20, 20], [-20, 20], 50, axes[i])
         axes[i].set_title(r'L2 reg. cost $J(w) + ' + str(strength[i]) + ' ||w||_2^2$')
     plot_path = os.path.join(
         "../Results",
-        f"Cost_L2_strength_10_15_20",
+        f"Cost_L2_strength_50_100_750",
     )
     plt.savefig(plot_path)
     plt.close()
-    strength = [5]
+    strength = [10]
     fig, axes = plt.subplots(ncols=3, nrows=1, constrained_layout=True, figsize=(15, 5))
     plot_contour(cost, [-20, 20], [-20, 20], 50, axes[0])
     axes[0].set_title(r'cost function $J(w)$')
     plot_contour(l1_penalty, [-20, 20], [-20, 20], 50, axes[1])
-    axes[1].set_title(r'L1 reg. $||w||_2^2$')
+    axes[1].set_title(r'L1 reg. $||w||$')
     for i in range(len(strength)):
-        cost_plus_l1 = lambda w: cost(w) + strength[i] * l1_penalty(w)
+        cost_plus_l1 = lambda w: cost(w) + strength[i] * l1_penalty(w[0])
         plot_contour(cost_plus_l1, [-20, 20], [-20, 20], 50, axes[i + 2])
-        axes[i + 2].set_title(r'L1 reg. cost $J(w) + ' + str(strength[i]) + ' ||w||_2^2$')
+        axes[i + 2].set_title(r'L1 reg. cost $J(w) + ' + str(strength[i]) + ' ||w||$')
     plot_path = os.path.join(
         "../Results",
-        f"Cost_L1_strength_5",
+        f"Cost_L1_strength_10",
     )
     plt.savefig(plot_path)
     plt.close()
-    strength = [10, 15, 20]
+    strength = [20, 50, 150]
     fig, axes = plt.subplots(ncols=3, nrows=1, constrained_layout=True, figsize=(15, 5))
     for i in range(len(strength)):
-        cost_plus_l1 = lambda w: cost(w) + strength[i] * l1_penalty(w)
+        cost_plus_l1 = lambda w: cost(w) + strength[i] * l1_penalty(w[0])
         plot_contour(cost_plus_l1, [-20, 20], [-20, 20], 50, axes[i])
-        axes[i].set_title(r'L1 reg. cost $J(w) + ' + str(strength[i]) + ' ||w||_2^2$')
+        axes[i].set_title(r'L1 reg. cost $J(w) + ' + str(strength[i]) + ' ||w||$')
     plot_path = os.path.join(
         "../Results",
-        f"Cost_L1_strength_10_15_20",
+        f"Cost_L1_strength_50_100_750",
     )
     plt.savefig(plot_path)
     plt.close()
 
-def plot_gradient_descent(current_cost,optimizer,axes,reg_coef,L2 = True):
-    plot_contour(current_cost, [-2, 2], [-5, 5], 50, axes)
-    w_hist = np.vstack(optimizer.w_history)  # T x 2
-    axes.plot(w_hist[:, 1], w_hist[:, 0], '.r', alpha=.8)
-    axes.plot(w_hist[:, 1], w_hist[:, 0], '-r', alpha=.3)
-    axes.set_xlabel(r'$w_0$')
-    axes.set_ylabel(r'$w_1$')
-    axes.set_title(f' lambda = {reg_coef}')
-    axes.set_xlim([-2, 2])
-    axes.set_ylim([-5, 5])
+
+def plot_gradient_descent(current_cost, optimizer, axes, reg_coef, L2=True):
+    plot_contour(current_cost, [-5, 5], [-10, 10], 50, axes)
+    w_hist = np.vstack(optimizer.w_history)
+    axes.plot(w_hist[:, 0], w_hist[:, 1], '.r', alpha=.8)
+    axes.plot(w_hist[:, 0], w_hist[:, 1], '-r', alpha=.3)
+    axes.set_xlabel(r'$w_1$')
+    axes.set_ylabel(r'$w_0$')
+    if L2:
+        axes.set_title(f' L2 lambda = {reg_coef}')
+    else:
+        axes.set_title(f' L1 lambda = {reg_coef}')
+    axes.set_xlim([-5, 5])
+    axes.set_ylim([-10, 10])
     if L2:
         plot_path = os.path.join(
             "../Results",
@@ -386,7 +388,7 @@ def plot_gradient_descent(current_cost,optimizer,axes,reg_coef,L2 = True):
         plt.close()
 
 
-def plot_T4_syth_data(x,y):
+def plot_T4_syth_data(x, y):
     plt.scatter(x, y, label="Synthetic Data", color='blue')
     plt.title("y = -4x + 10 + 2ε")
     plt.xlabel("x")
@@ -398,4 +400,19 @@ def plot_T4_syth_data(x,y):
         f"T4_syth_data",
     )
     plt.savefig(plot_path)
+    plt.close()
+
+
+def plot_weight_vs_lambda(reg, l1, l2):
+    plt.plot(reg, l2, label=['l2_w1', 'l2_w0'])
+    plt.plot(reg, l1, label=['l1_w1', 'l1_w0'])
+    plt.title("Change in $w0$ and $w1$ of L1 and L2 Regression under increasing $lambda$")
+    plt.xlabel("$lambda$")
+    plt.grid(True)
+    plt.legend()
+    plot_path = os.path.join(
+        "../Results",
+        f"weight_vs_lambda",
+    )
+    plt.savefig(plot_path, dpi=300)
     plt.close()

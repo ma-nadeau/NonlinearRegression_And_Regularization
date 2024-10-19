@@ -2,7 +2,7 @@ import numpy as np
 N = 50
 class GradientDescent:
 
-    def __init__(self, learning_rate=.001, max_iters=1e4, epsilon=1e-7, record_history=False):
+    def __init__(self, learning_rate=.001, max_iters=1e4, epsilon=1e-8, record_history=False):
         self.learning_rate = learning_rate
         self.max_iters = max_iters
         self.record_history = record_history
@@ -15,7 +15,7 @@ class GradientDescent:
         t = 1
         while np.linalg.norm(grad) > self.epsilon and t < self.max_iters:
             grad = gradient_fn(x, y, w)
-            w = w - self.learning_rate * grad
+            w = w - (self.learning_rate) * grad
             if self.record_history:
                 self.w_history.append(w)
             t += 1
@@ -39,8 +39,8 @@ class L2_Regression:
         def gradient(x, y, w):
             yh = x @ w
             N, D = x.shape
-            grad = .5 * np.dot(yh - y, x) / N
-            grad += self.l2_reg * w
+            grad = np.dot(yh - y, x) / N
+            grad[0] += self.l2_reg * w[0]
             return grad
 
         w0 = np.ones(D)
@@ -71,8 +71,8 @@ class L1_Regression:
         def gradient(x, y, w):
             yh = x @ w
             N, D = x.shape
-            grad = .5 * np.dot(yh - y, x) / N
-            grad += self.l1_reg * np.sign(w)
+            grad = np.dot(yh - y, x) / N
+            grad[0] += self.l1_reg * np.sign(w[0])
             return grad
 
         w0 = np.ones(D)
