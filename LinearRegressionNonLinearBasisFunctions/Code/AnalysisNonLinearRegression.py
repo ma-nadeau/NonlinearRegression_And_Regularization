@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from NonLinearRegression import *
-from Assignment2.Helper import (
+from LinearRegressionNonLinearBasisFunctions.Code.Helper import (
     generate_synthetic_data,
     sinusoidal_function_for_synthetic_data,
     gaussian,
@@ -12,7 +12,7 @@ from Assignment2.Helper import (
     sigmoid,
     other_test_function_for_synthetic_data,
 )
-from Assignment2.PlotHelper import *
+from LinearRegressionNonLinearBasisFunctions.Code.PlotHelper import *
 
 
 def model_fitting(

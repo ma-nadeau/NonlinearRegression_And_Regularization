@@ -4,27 +4,24 @@ In this assignment, we explore regularization and model evaluation by implementi
 
 ## How to Run
 
-### Part 1 & 2
+### Linear Regression with Non-Linear Basis Functions & Bias-Variance Tradeoff with Multiple Fits
 1. Navigate to the `LinearRegressionNonLinearBasisFunctions/Code` folder.
 2. Run the `AnalysisNonLinearRegression.py` file.
 
-### Part 3
+### Regularization with Cross-Validation
 1. Navigate to the `LinearRegressionWithCrossValidation/Code` folder.
 2. Run the `RegularizationWithCrossValidation.py` file.
 
-## Part 4
+## Effect of L1 and L2 Regularization on Loss
 1. Navigate to the `Task4/Code` folder.
 2. Run the `Losseffectofregularization.py` file.
 
 ## Results
 Any resulting figures/graphs will be saved in their respective folders:
-- `LinearRegressionNonLinearBasisFunctions/Results`: Contains the results for Part 1 & 2
-- `LinearRegressionWithCrossValidation/Results`: Contains the results for Part 3
-- `Task4/Results`: Contains the results for Part 4
+- `LinearRegressionNonLinearBasisFunctions/Results`: Contains the results for Linear Regression with Non-Linear Basis Functions & Bias-Variance Tradeoff with Multiple Fits
+- `LinearRegressionWithCrossValidation/Results`: Contains the results for Regularization with Cross-Validation
+- `Task4/Results`: Contains the results for Effect of L1 and L2 Regularization on Loss
 
-## Helper Functions
-The `Helper.py` file contains all the helper functions used throughout this project.
-The `PlotHelper.py` file contains all the helper functions used throughout this project for plotting results.
 
 ## Prerequisites
 Make sure you have the following Python libraries installed:
