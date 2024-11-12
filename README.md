@@ -2,6 +2,11 @@
 
 In this assignment, we explore regularization and model evaluation by implementing a linear regression model from scratch using non-linear basis functions.
 
+## Contributors
+
+Created by [Marc-Antoine Nadeau](https://github.com/ma-nadeau), [Jessie Kurtz](https://github.com/jkzcodes), and [Baicheng Peng](https://github.com/sivess)
+
+
 ## How to Run
 
 ### Linear Regression with Non-Linear Basis Functions & Bias-Variance Tradeoff with Multiple Fits
